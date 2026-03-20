@@ -1,0 +1,71 @@
+<launch>
+
+  <!-- TEACHER NODE -->
+  <node pkg="teacher_core"
+        type="teacher_node.py"
+        name="teacher_node"
+        output="screen">
+
+    <param name="topic_name" value="King Arthur"/>
+    <param name="llm_model" value="gpt-4o-mini"/>
+    <param name="answer_max_sentences" value="3"/>
+
+    <!-- Human gets 5 sec after "What is your doubt?" -->
+    <param name="wait_seconds" value="10"/>
+
+    <!-- Human gets 5 sec first for middle question and quiz -->
+    <param name="human_answer_timeout" value="10"/>
+
+    <!-- If human interrupts before MiRo doubt, delay MiRo by 3 lines -->
+    <param name="miro_delay_lines_after_human" value="3"/>
+
+    <param name="quiz_count" value="5"/>
+    <param name="miro_answer_timeout" value="10"/>
+    <param name="sentence_pause" value="0.25"/>
+
+    <param name="piper_bin" value="/home/saul_reynodar/piper/piper"/>
+    <param name="piper_model" value="/home/saul_reynodar/piper/en_US-libritts-high.onnx"/>
+    <param name="wav_path" value="/tmp/teacher.wav"/>
+  </node>
+
+  <!-- MIRO -->
+  <node pkg="teacher_core"
+        type="miro_head_node.py"
+        name="miro_behaviour"
+        output="screen">
+
+    <param name="llm_model" value="gpt-4o-mini"/>
+    <param name="miro_correct_probability" value="0.6"/>
+
+    <param name="miro_piper_bin" value="/home/saul_reynodar/piper/piper"/>
+    <param name="miro_piper_model" value="/home/saul_reynodar/piper/malechild.onnx"/>
+    <param name="miro_wav_path" value="/tmp/miro.wav"/>
+    <param name="miro_speak_enabled" value="true"/>
+
+    <param name="interruptions_allowed" value="2"/>
+    <param name="interrupt_min_gap" value="10"/>
+    <param name="interrupt_chance_per_sec" value="0.10"/>
+
+    <param name="lift" value="0.35"/>
+    <param name="yaw_up" value="-0.60"/>
+    <param name="yaw_down" value="0.60"/>
+    <param name="yaw_left" value="-0.70"/>
+    <param name="yaw_right" value="0.70"/>
+
+    <param name="blink_interval" value="3.0"/>
+    <param name="blink_close_time" value="0.12"/>
+  </node>
+
+  <!-- STT -->
+  <node pkg="teacher_core"
+        type="stt_node.py"
+        name="stt_node"
+        output="screen">
+    <param name="model_size" value="base"/>
+    <param name="sample_rate" value="16000"/>
+    <param name="record_seconds" value="2"/>
+    <param name="energy_threshold" value="0.03"/>
+    <param name="language" value="en"/>
+  </node>
+
+</launch>
